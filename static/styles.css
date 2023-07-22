@@ -1,0 +1,28 @@
+body {
+    background-color: black;
+    color: white; /* Set the text color to white for better visibility */
+  }
+  .frame {
+    border: 3px solid white;
+    padding: 40px;
+    display: inline-block;
+    width: 150px; /* Set a fixed width for the frame */
+    box-sizing: border-box; /* Include padding and border in the specified width */
+  }
+  /* CSS styles for the headings */
+/* Add styles for the generated images */
+.generated-image {
+  display: block;
+  max-width: 10%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+/* Add styles for the container of generated images */
+#generated-images-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
