@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Black Web App</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}"></link>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon"></link>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+    }
+    
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    
+    .sidebar {
+      background-color: #111;
+      width: 200px;
+      padding: 20px;
+      overflow-y: auto; /* Enable vertical scrolling */
+    }
+    
+    .sidebar h1 {
+      color: white;
+      font-size: 30px;
+      margin-top: 0;
+    }
+
+    .sidebar input {
+      background-color: black;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .sidebar select {
+      background-color: black;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .sidebar option[Disabled] {
+      color: black;
+    }
+    
+    .content {
+      flex: 1;
+      color: white;
+      padding: 20px;
+    }
+    
+    .separator {
+      border-top: 1px solid white;
+      margin-top: 20px;
+    }
+    
+    .content img {
+      max-width: 10%; /* Adjust the value as per your requirements */
+      height: auto;
+    }
+    
+    .frame {
+      border: 2px solid white;
+      padding: 20px;
+      display: inline-block;
+    }
+    
+    .frame button {
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 5px 20px; /* Decreased padding */
+      font-size: 16px;
+    }
+    
+    .generate-button {
+      padding: 2px 40px; /* Padding for Generate button */
+    }
+    
+    .take-photo-button {
+      padding: 2px 40px; /* Padding for Take Photo button */
+    }
+    .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 20px; /* Adjust the top position as needed */
+            left: 200px;  /* Adjust the left position as needed */
+            margin-top: 2px;
+    }
+    .image-container img {
+            width: 200px; /* Adjust the width as needed to fit four images per row */
+            height: auto;
+            margin: 10px
+    }
+  </style>
+  <script>
+  function handleFileSelect(event) {
+    const fileList = event.target.files; // Get the uploaded files
+    const uploadedImagesDiv = document.getElementById('uploaded-images'); // Get the div element to display images
+
+    uploadedImagesDiv.innerHTML = ""; // Clear the existing content
+
+    for (let i = 0; i < fileList.length; i++) {
+      const file = fileList[i];
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        const img = document.createElement('img'); // Create an img element
+        img.src = event.target.result; // Set the source of the image
+        img.style.maxWidth = '100px'; // Optional: Set a maximum width for the displayed image
+        uploadedImagesDiv.appendChild(img); // Append the image to the div
+      };
+
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
+  }
+  function takePhoto() {
+    // ... existing code for taking a photo ...
+    }
+    function handleFileSelect(event) {
+      var file = event.target.files[0];
+      var reader = new FileReader();
+      var imgElement = document.createElement('img');
+      imgElement.className = 'uploaded-image';
+      var contentElement = document.querySelector('.content');
+      
+      reader.onload = function(e) {
+      imgElement.src = e.target.result;
+      contentElement.innerHTML = ''; // Clear any existing content
+      contentElement.appendChild(imgElement);
+      };
+      
+      reader.readAsDataURL(file);
+    }
+    
+  function takePhoto() {
+    var contentElement = document.querySelector('.content');
+      
+    // Access the user's camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function (stream) {
+        var videoElement = document.createElement('video');
+        videoElement.srcObject = stream;
+        videoElement.play();
+          
+        var canvasElement = document.createElement('canvas');
+        canvasElement.width = videoElement.videoWidth;
+        canvasElement.height = videoElement.videoHeight;
+          
+        var context = canvasElement.getContext('2d');
+        context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+          
+        var imgElement = document.createElement('img');
+        imgElement.src = canvasElement.toDataURL('image/png');
+        imgElement.className = 'captured-image';
+          
+        contentElement.innerHTML = ''; // Clear any existing content
+        contentElement.appendChild(imgElement);
+          
+        // Stop video stream
+        stream.getTracks().forEach(function (track) {
+          track.stop();
+        });
+      })
+      .catch(function (error) {
+        console.error('Error accessing camera:', error);
+        });
+      }
+      function handleFileSelect(event) {
+    const fileList = event.target.files; // Get the uploaded files
+    const uploadedImagesDiv = document.getElementById('uploaded-images'); // Get the div element to display images
+
+    uploadedImagesDiv.innerHTML = ""; // Clear the existing content
+
+    for (let i = 0; i < fileList.length; i++) {
+      const file = fileList[i];
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        const img = document.createElement('img'); // Create an img element
+        img.src = event.target.result; // Set the source of the image
+        img.style.maxWidth = '100px'; // Optional: Set a maximum width for the displayed image
+        uploadedImagesDiv.appendChild(img); // Append the image to the div
+      };
+
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
+  } 
+  function generateImages() {
+    console.log("Generate button clicked."); // Check if the function is being called
+    var numImagesInput = document.getElementById('num-images-input');
+    var numImages = numImagesInput.value;
+
+    var promptInput = document.getElementById('prompt-input');
+    var prompt = promptInput.value;
+
+    // Create a form data object
+    var formData = new FormData();
+    formData.append('num_images', numImages);
+    formData.append('prompt', prompt);
+
+    // Send the form data via a POST request
+    fetch('/generate_images', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Handle the response data as needed
+      console.log(data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <h1 style="color: rgb(206, 16, 16);">PHOTO AI</h1>
+
+      <form action="/generate_images" method="POST" enctype="multipart/form-data"> 
+          
+          <label style="color: white;">HOW MANY PHOTOS TO TAKE?</label>
+          <br><br />
+          <input type="number"  name="num-images-input" placeholder="Enter the number of images" min="1" max="10" required>
+          <br><br /> <!-- Line break here -->
+     
+          <label>WHAT DO YOU WANT TO DO?</label>
+          <br><br />
+          <input type="text" placeholder="Enter your prompt">
+          <div class="separator"></div> <!-- Horizontal line separator -->
+          <br><br />
+      
+          <label>WRITE PROMPT</label> <!-- Updated h4 heading -->
+          <br><br />
+          <input type="text" name="prompt-input" placeholder="Enter the prompt" required>
+          <br><br />
+
+        
+          <label>UPLOAD MODEL</label> <!-- New h5 heading -->
+          <br><br />
+          <input type="file" name="image" id="image" placeholder="Upload a photo" accept="image/*" onchange="handleFileSelect(event)">
+          <p style="color: white; font-size: 12px; margin-top: 5px;">Upload a 576x576 pixel png file</p>
+          <div id="uploaded-images"></div> <!-- Div to display uploaded images -->
+          <!--button type="submit"></button-->
+          <br><br />
+      
+          <div class="frame">
+          <button type="submit">Generate</button><!-- Generate button -->
+          </div>
+          <br><br />
+
+          <div class="frame">
+          <button class="take-photo-button" onclick="takePhoto()">Take Photo</button> <!-- Take Photo button -->
+          </div>
+        </div>
+          <div class="image-container">
+          
+            
+            <img src="static/gen_images/g_img1.png" alt="">
+            <img src="static/gen_images/g_img2.png" alt="">
+            <img src="static/gen_images/g_img3.png" alt="">
+            <img src="static/gen_images/g_img4.png" alt="">    
+            <img src="static/gen_images/g_img5.png" alt="">
+            <img src="static/gen_images/g_img6.png" alt="">
+            <img src="static/gen_images/g_img7.png" alt="">
+            <img src="static/gen_images/g_img8.png" alt="">
+            <img src="static/gen_images/g_img9.png" alt="">
+            <img src="static/gen_images/g_img10.png" alt="">
+          
+          
+          </div>
+      </form>
+    </div> 
+  </div>
+    <div class="content">
+      <!-- Main content here -->
+    </div>
+</body>
+</html>
+
