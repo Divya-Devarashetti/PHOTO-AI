@@ -4,7 +4,7 @@ import openai
 import os
 
 app = Flask(__name__)
-openai.api_key = "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"
+openai.api_key = "your-api-key"
 
 #mask_path = "C:\\Users\\HP PRO BOOK\\Downloads\\mask (1).png"
 output_folder = os.path.join(app.static_folder, 'gen_images')
